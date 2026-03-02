@@ -57,14 +57,14 @@ def load_data(file_path: str) -> pd.DataFrame:
     except Exception as e:
         logger.error("Unexpected error occured: %s",e)
         raise
-def test(df:pd.DataFrame)->None:
+def test(df:pd.DataFrame,prms:dict)->None:
     try:
         x = df.iloc[:,0:12] 
         Y = df.iloc[:,[12]]
         if x.shape[0] != Y.shape[0]:
             raise ValueError("Invalid Shape")
 
-        x_train,x_test,y_train,y_test = train_test_split(x,Y,test_size=0.1,random_state=12)
+        x_train,x_test,y_train,y_test = train_test_split(x,Y,test_size=prms["data_modeling"]["test_size"],random_state=prms["data_modeling"]["random_state"])
         os.makedirs(os.path.join("./data","test"),exist_ok=True)
         x_test.to_csv("data/test/xtest.csv",index=False)
         y_test.to_csv("data/test/ytest.csv",index=False)
@@ -117,7 +117,7 @@ def main():
         param = load_params(params="params.yaml")
         path = "data/preprocessed/preprocessed.csv"
         df = load_data(path)
-        t = test(df)
+        t = test(df,param)
         model = model_training(df,params=param)
         save_model(model,"models/model.pkl")
         logger.debug("Succesfully excecuted data modeling")

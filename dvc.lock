@@ -41,8 +41,14 @@ stages:
       nfiles: 1
     - path: src/data_modeling.py
       hash: md5
-      md5: f3b065dd55eb12f47f66fdd21fadbb55
-      size: 4465
+      md5: e8f0c71e3fb97aa36e097fcb390b471f
+      size: 4547
+    params:
+      params.yaml:
+        data_modeling.learning_rate: 0.1
+        data_modeling.n_estimators: 500
+        data_modeling.random_state: 12
+        data_modeling.test_size: 0.1
     outs:
     - path: data/test
       hash: md5
@@ -67,8 +73,8 @@ stages:
       size: 1895677
     - path: src/model_evaluation.py
       hash: md5
-      md5: 0922a42ebee8694010f6b07547389334
-      size: 2278
+      md5: 5a5d39690892ba4cac5f2e7ca2c90169
+      size: 3333
     outs:
     - path: reports/metrics.json
       hash: md5
