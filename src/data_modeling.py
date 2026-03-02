@@ -4,6 +4,7 @@ import logging
 from xgboost import XGBRegressor
 import joblib
 from sklearn.model_selection import train_test_split
+import yaml
 
 log_dirs = "logs"
 os.makedirs(log_dirs,exist_ok=True)
@@ -26,6 +27,22 @@ file_handler.setFormatter(formatter)
 logger.addHandler(stream_handler)
 logger.addHandler(file_handler)
 
+def load_params(params:str)->dict:
+    try:
+        with open(params,"r") as f:
+            pr = yaml.safe_load(f)
+        f.close()
+        logger.debug("Succesfully loaded params")
+        return pr
+    except FileNotFoundError as e:
+        logger.error("FilenotFound: %s", e)
+        raise
+    except yaml.YAMLError as e:
+        logger.error("Yaml error: %s",e )
+        raise
+    except Exception as e:
+        logger.error("Unexpected error occured during loading params file: %s", e)
+        raise
 def load_data(file_path: str) -> pd.DataFrame:
     try:
         df = pd.read_csv(file_path)
@@ -65,9 +82,9 @@ def model_training(df:pd.DataFrame, params:dict)-> XGBRegressor:
         logger.debug("model training started with %s samples",x.shape[0])       
         x_train,x_test,y_train,y_test = train_test_split(x,Y,test_size=0.1,random_state=12)
         xgb = XGBRegressor(
-            n_estimators=params["n_estimators"],
-            learning_rate=params["learning_rate"],
-            random_state=params["random_state"],
+            n_estimators=params["data_modeling"]["n_estimators"],
+            learning_rate=params["data_modeling"]["learning_rate"],
+            random_state=params["data_modeling"]["random_state"],
             eval_metric='mae',
             tree_method='hist'
         )
@@ -96,7 +113,8 @@ def save_model(model: XGBRegressor,file_path:str)->None:
 
 def main():
     try:
-        param = {'n_estimators':500,'learning_rate':0.1,'random_state':34}
+        # param = {'n_estimators':500,'learning_rate':0.1,'random_state':34}
+        param = load_params(params="params.yaml")
         path = "data/preprocessed/preprocessed.csv"
         df = load_data(path)
         t = test(df)
