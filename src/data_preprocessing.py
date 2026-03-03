@@ -2,6 +2,8 @@ import pandas as pd
 from sklearn.preprocessing import StandardScaler,MinMaxScaler,OneHotEncoder,RobustScaler,OrdinalEncoder
 from sklearn.impute import SimpleImputer
 import os
+import json
+import joblib
 import logging
 
 log_dirs = "logs"
@@ -31,22 +33,29 @@ def preprocessing(df:pd.DataFrame) -> pd.DataFrame:
         Categorical_features = df.iloc[:,[0,1,2,5,6,7]]
         oe = OrdinalEncoder()
         ar = oe.fit_transform(Categorical_features)
+        os.makedirs(os.path.dirname("models/oe.pkl"),exist_ok=True)
+        with open("models/oe.pkl","wb") as f:
+            joblib.dump(oe,f)
+        f.close()
         df2 = pd.DataFrame(ar,columns=oe.get_feature_names_out(Categorical_features.columns))
         df1 = pd.concat([df2,df.drop(columns=['car_name', 'brand', 'model', 'seller_type', 'fuel_type',
        'transmission_type'])],axis=1)
         #----------------------------------------------------------------------------------
-#         #Normalizing Robust Scaler
-#         robust = RobustScaler()
-#         cols = df.columns[[6,7,8,9,10]]
+        os.makedirs(os.path.dirname("./data/json/cars"),exist_ok=True)
+        os.makedirs(os.path.dirname("./data/json/brands"),exist_ok=True)
+        cars = df.groupby(["brand"])["car_name"].unique().reset_index(name="Cars")
+        cars_brands = dict()
+        brands = dict()
+        for i in cars.values:
+             cars_brands[i[0]] = i[1].tolist()
+             brands[i[0]] = len(i[1].tolist())
+        with open("data/json/cars","w") as fd:
+            json.dump(cars_brands,fd)
+        fd.close()
+        with open("data/json/brands","w") as f:
+            json.dump(brands,f)
+        fd.close()
 
-#         df1[cols] = df1[cols].astype(float)
-
-#         df1[cols] = robust.fit_transform(df1[cols])
-# #std
-#         cols = df1.columns[11]
-#         df1[cols] = df1[cols].astype(float)
-#         std = StandardScaler()
-#         df1.iloc[:,[11]] = std.fit_transform(df1.iloc[:,[11]])
         #----------------------------------------------------------------------------------
         logger.debug("Succesfully Preprocessed the dataset: %s", df1)
         return df1
