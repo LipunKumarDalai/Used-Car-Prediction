@@ -10,6 +10,7 @@
 <li>Live metric logging using DVCLive</li>
 <li>Reproducible experiments</li>
 <li>Parameterized training via params.yaml</li>
+<li>Demonstrated model using Streamlit</li>
 
 
 ##### The entire workflow is production-oriented and reproducible.
