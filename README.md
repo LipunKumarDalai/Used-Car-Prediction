@@ -35,10 +35,10 @@ The project now includes a Dockerfile that sets up the entire environment with a
 Allows running the ML pipeline and Streamlit app in a containerized setup:
 
 ### Build Docker image
-docker build -t used-car-price-prediction .
+docker build -t usercarprediction-app .
 
 ### Run container
-docker run -p 8501:8501 used-car-price-prediction
+docker run -p 5000:5000 usercarprediction-app
 
 Ensures reproducibility across different machines and avoids environment-related issues.
 Compatible with CI/CD pipelines for automated deployment.
