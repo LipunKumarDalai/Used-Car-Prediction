@@ -10,6 +10,7 @@
 <li>Live metric logging using DVCLive</li>
 <li>Reproducible experiments</li>
 <li>Parameterized training via params.yaml</li>
+<li>Demonstrated model using Streamlit</li>
 
 
 ##### The entire workflow is production-oriented and reproducible.
@@ -26,6 +27,9 @@ The pipeline is orchestrated using DVC and consists of:
 5. Model Evaluation  
 6. Best Model Selection  
 7. Artifact Storage in AWS S3
+
+## Application
+<img width="655" height="908" alt="image" src="https://github.com/user-attachments/assets/b2de8113-1395-4ed7-9ad6-f17a9e787b2a" />
 
 
   
